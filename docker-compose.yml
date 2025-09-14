@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  packet-to-prompt:
+    build: .
+    ports:
+      - "8000:8000"  # FastAPI backend
+      - "8501:8501"  # Streamlit frontend
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./.env:/app/.env
+    environment:
+      - PYTHONPATH=/app
+      - DATA_DIR=/app/data
+      - OUTPUT_DIR=/app/output
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  data:
+  output: 
